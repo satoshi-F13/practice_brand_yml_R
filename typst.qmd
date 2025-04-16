@@ -1,0 +1,54 @@
+---
+title: "Hello Typst!"
+format:
+  typst:
+    brand: _brand.yml
+    toc: true
+    section-numbering: 1.1.a
+    papersize: a5
+    margin:
+      x: 1cm
+      y: 1cm
+    columns: 2
+    logo: "logos/icon/brand-yml-icon-color.png"
+    execute:
+      echo: false
+      warning: false
+---
+
+
+
+```{=typst}
+#rect(fill: brand-color.primary)
+```
+
+
+```{=typst} 
+#set par(justify: true)
+
+== Background 
+In the case of glaciers, fluid dynamics principles can be used to understand how the movement and behavior of the ice is influenced by factors such as temperature, pressure, and the presence of other fluids (such as water).
+```
+
+
+```{r}
+library(gt)
+temps <- data.frame(
+  year = c(1920:1924),
+  Jan = c(40.6, 44.2, 37.5, 41.8, 39.3), 
+  Jun = c(58.5, 58.7, 57.8, 52.7, 57.7)
+)
+temps |>
+  gt() |> 
+  data_color(
+    columns = c(-year),
+    fn = scales::col_numeric(
+      colorspace::diverge_hcl(n = 9,
+        palette = "Green-Orange"),
+      domain = c(35, 62))
+  )
+
+```
+
+
+In regards to the layout of the typst document, we need to apply for the partialtemplate in the YAML header as typst-template.typ and typst-show.typ.    

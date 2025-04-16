@@ -1,0 +1,13 @@
+/*-- scss:functions --*/
+@function get-brand-value($key) {
+  @return var(--#{$key});
+}
+
+/*-- scss:rules --*/
+$primary: get-brand-value('brand-color-primary');
+$body-bg: get-brand-value('brand-color-background');
+$body-color: get-brand-value('brand-color-foreground');
+$link-color: get-brand-value('typography-link-color');
+$font-family-base: get-brand-value('typography-base-family');
+$font-family-monospace: get-brand-value('typography-monospace-family');
+$headings-font-family: get-brand-value('typography-headings-family');

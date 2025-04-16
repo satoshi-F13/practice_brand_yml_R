@@ -1,0 +1,65 @@
+meta:
+  name: brand.yml
+  links:
+    home: https://posit-dev.github.io/brand-yml
+    github: https://github.com/posit-dev/brand-yml
+
+logo:
+  images:
+    icon-color: logos/icon/brand-yml-icon-color.png
+    wide-color: logos/wide/brand-yml-wide-color.png
+    tall-color: logos/wide/brand-yml-tall-color.png
+  small: icon-color
+  medium: wide-color
+  large: tall-color
+
+color:
+  palette:
+    orange: "#FF6F20"
+    pink: "#FF3D7F"
+    green: "#28A745"
+    yellow: "#FFC107"
+    violet: "#4D6CFA"
+    neutral: "#faedc5"
+    black: "#050505"
+  background: neutral
+  foreground: black
+  primary: orange
+  success: green
+  warning: yellow
+  danger: pink
+  info: violet
+
+typography:
+  fonts:
+    - family: Open Sans
+      source: google
+    - family: IBM Plex Mono
+      source: google
+    - family: Rubik
+      source: google
+  base:
+    family: Open Sans
+    line-height: 1.6
+  headings:
+    family: Rubik
+    weight: 400  # 400 is equivalent to "regular" in most font systems
+  link:
+    color: purple
+    decoration: underline
+  monospace:
+    family: IBM Plex Mono
+    size: 1em
+
+defaults:
+  bootstrap:
+    defaults: # defaults also supports a string as its value
+      link-decoration: underline
+      navbar-fg: "#fff"
+  quarto:
+    format:
+      # basic format-specific settings
+      html:
+      revealjs:
+  shiny:
+    # shiny specific settings
