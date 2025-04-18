@@ -1,51 +1,57 @@
 meta:
-  name: brand.yml
+  name: SATOM OÜ
   links:
-    home: https://posit-dev.github.io/brand-yml
-    github: https://github.com/posit-dev/brand-yml
+    home: https://satom.eu/
+
 
 logo:
   images:
-    icon-color: logos/icon/brand-yml-icon-color.png
-    wide-color: logos/wide/brand-yml-wide-color.png
-    tall-color: logos/wide/brand-yml-tall-color.png
+    icon-color: logos/icon/satom-icon-color.png
+    wide-color: logos/wide/satom-wide-color.png
+    tall-color: logos/wide/satom-tall-color.png
   small: icon-color
   medium: wide-color
   large: tall-color
 
 color:
   palette:
-    orange: "#FF6F20"
-    pink: "#FF3D7F"
-    green: "#28A745"
-    yellow: "#FFC107"
-    violet: "#4D6CFA"
-    neutral: "#faedc5"
-    black: "#050505"
-  background: neutral
-  foreground: black
-  primary: orange
-  success: green
-  warning: yellow
-  danger: pink
-  info: violet
+    awanokuni: "#E3EBF3"
+    samue: "#7093BF"
+    noren: "#375A9D"
+    hakujiiro: "#E9EAEB"
+    ginhakushoku: "#D3D3D2"
+    gosuiro: "#323172"
+    sitagoshirae: "#E7D3CF"
+    gochiso: "#CB6874"
+    hashi: "#a47d59"
+    urahairo: "#97CEA1"
+  foreground: gosuiro
+  background: awanokuni
+  primary: samue
+  secondary: ginhakushoku
+  success: urahairo
+  info: sitagoshirae
+  warning: hashi
+  danger: gochiso
+  light: awanokuni
+  dark: noren
 
 typography:
   fonts:
-    - family: Open Sans
+    - family: NOTO Sans
       source: google
     - family: IBM Plex Mono
       source: google
-    - family: Rubik
+    - family: Alata 
       source: google
   base:
-    family: Open Sans
+    family: NOTO Sans
     line-height: 1.6
   headings:
-    family: Rubik
-    weight: 400  # 400 is equivalent to "regular" in most font systems
+    family: Alata 
+    weight: 600  # 400 is equivalent to "regular" in most font systems
   link:
-    color: purple
+    color: primary
     decoration: underline
   monospace:
     family: IBM Plex Mono

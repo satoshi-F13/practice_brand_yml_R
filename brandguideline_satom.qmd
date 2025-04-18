@@ -1,0 +1,303 @@
+# SATOM Brand Guidelines Generator
+# This script creates a comprehensive brand guidelines PDF document
+
+# Load required packages
+
+```{r}
+install.packages(c("rmarkdown", "knitr", "showtext", "ggplot2", "gridExtra", "grid", "png"), repos = "https://cran.rstudio.com/", dependencies = TRUE)
+
+
+library(rmarkdown)
+library(knitr)
+library(ggplot2)
+library(showtext)
+library(gridExtra)
+library(grid)
+library(png)
+
+# Create a temporary directory to store the brand assets
+dir.create("brand_assets", showWarnings = FALSE)
+
+# Function to save the logo images from a URL or path
+save_logo <- function(logo_path, output_file) {
+  # This is a placeholder - in an actual implementation, 
+  # you would need to save the logo files that were uploaded
+  # For this example, we'll create placeholder text files
+  cat("Logo placeholder for", output_file, "\n", 
+      file = file.path("brand_assets", paste0(output_file, ".txt")))
+}
+
+# Save the logo files
+save_logo("path_to_logo1", "satom_main_logo")
+save_logo("path_to_logo2", "satom_icon_logo")
+
+# Define the color palette
+color_palette <- list(
+  awanokuri = list(name = "Awanokuri", hex = "#E3EBF3", rgb = "227, 235, 243"),
+  samue = list(name = "Samue", hex = "#7093BF", rgb = "112, 147, 191"),
+  noren = list(name = "Noren", hex = "#375A9D", rgb = "55, 90, 157"),
+  hakujiiro = list(name = "Hakujiiro", hex = "#E9EAEB", rgb = "233, 234, 235"),
+  ginhakushoku = list(name = "Ginhakushoku", hex = "#D3D3D2", rgb = "211, 211, 210"),
+  lux_ex_data = list(name = "Lux ex Data", hex = "#375A9D", rgb = "55, 90, 157")  # Using Noren for tagline color
+)
+
+# Create a function to generate a color palette visualization
+create_color_swatches <- function(colors) {
+  # Create a data frame for ggplot
+  color_df <- data.frame(
+    name = sapply(colors, function(x) x$name),
+    hex = sapply(colors, function(x) x$hex),
+    rgb = sapply(colors, function(x) x$rgb),
+    y = 1:length(colors),
+    stringsAsFactors = FALSE
+  )
+  
+  # Create a ggplot2 visualization
+  p <- ggplot(color_df, aes(x = 1, y = y, fill = hex)) +
+    geom_tile(width = 15, height = 0.9) +
+    scale_fill_identity() +
+    geom_text(aes(x = 8, label = name), hjust = 0, size = 5) +
+    geom_text(aes(x = 15, label = paste0("HEX: ", hex)), hjust = 0, size = 4) +
+    geom_text(aes(x = 25, label = paste0("RGB: ", rgb)), hjust = 0, size = 4) +
+    theme_void() +
+    theme(
+      plot.margin = unit(c(1, 1, 1, 1), "cm"),
+      plot.background = element_rect(fill = "white", color = NA),
+      legend.position = "none"
+    ) +
+    xlim(0, 35) +
+    ylim(0.5, length(colors) + 0.5) +
+    coord_fixed(ratio = 1)
+  
+  # Save the plot
+  ggsave(
+    filename = file.path("brand_assets", "color_palette.png"),
+    plot = p,
+    width = 10,
+    height = length(colors) * 0.8,
+    dpi = 300
+  )
+}
+
+# Generate the color palette visualization
+create_color_swatches(color_palette)
+
+# Create the R Markdown document
+rmd_content <- '
+---
+title: "SATOM Brand Guidelines"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    highlight: tango
+    latex_engine: xelatex
+header-includes:
+  - \\usepackage{fontspec}
+  - \\usepackage{fancyhdr}
+  - \\usepackage{geometry}
+  - \\usepackage{xcolor}
+  - \\usepackage{graphicx}
+  - \\usepackage{titlesec}
+  - \\usepackage{titling}
+  - \\geometry{a4paper, margin=2.5cm}
+  - \\pagestyle{fancy}
+  - \\fancyhf{}
+  - \\renewcommand{\\headrulewidth}{0pt}
+  - \\fancyfoot[C]{\\thepage}
+  - \\definecolor{noren}{HTML}{375A9D}
+  - \\definecolor{samue}{HTML}{7093BF}
+  - \\definecolor{awanokuri}{HTML}{E3EBF3}
+  - \\titleformat{\\section}{\\normalfont\\Large\\bfseries\\color{noren}}{\\thesection}{1em}{}
+  - \\titleformat{\\subsection}{\\normalfont\\large\\bfseries\\color{samue}}{\\thesubsection}{1em}{}
+  - \\pretitle{\\begin{center}\\LARGE\\color{noren}}
+  - \\posttitle{\\end{center}}
+---
+
+```
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+\\begin{center}
+\\includegraphics[width=0.8\\textwidth]{brand_assets/satom_main_logo.txt}
+\\end{center}
+
+\\begin{center}
+\\color{noren}\\LARGE{SATOM Brand Guidelines}\\\\[0.5cm]
+\\normalsize{Version 1.0 • `r format(Sys.Date(), "%B %Y")`}
+\\end{center}
+
+\\newpage
+
+# Introduction
+
+This document outlines the official brand guidelines for SATOM. Consistent application of these guidelines across all media and communications will strengthen our brand identity and ensure a cohesive visual presentation to our audience.
+
+The SATOM brand represents our commitment to "Lux ex Data" - light from data - illuminating insights through data analysis and visualization.
+
+# Logo
+
+## Primary Logo
+
+The SATOM primary logo consists of the wordmark "SATOM" in bold blue letters with the tagline "Lux ex Data" positioned beneath it. A subtle ray design element appears to the left, suggesting illumination and insight.
+
+\\begin{center}
+\\includegraphics[width=0.8\\textwidth]{brand_assets/satom_main_logo.txt}
+\\end{center}
+
+## Logo Icon
+
+The SATOM icon is a simplified version of our brand mark, featuring the "S" from our wordmark. This icon should be used when space is limited or for app icons, favicons, and social media profile pictures.
+
+\\begin{center}
+\\includegraphics[width=0.3\\textwidth]{brand_assets/satom_icon_logo.txt}
+\\end{center}
+
+## Logo Usage Guidelines
+
+### Clear Space
+
+Always maintain adequate clear space around the logo to ensure its visibility and impact. The minimum clear space should be equal to the height of the "S" in the SATOM wordmark.
+
+### Minimum Size
+
+To ensure legibility, do not reproduce the primary logo at sizes smaller than 25mm in width for print applications or 100px for digital applications.
+
+### Incorrect Usage
+
+- Do not stretch or distort the logo
+- Do not rotate the logo
+- Do not change the colors of the logo
+- Do not add effects such as drop shadows or glows
+- Do not place the logo on busy backgrounds that reduce visibility
+- Do not rearrange the elements of the logo
+
+# Color Palette
+
+Our color palette consists of carefully selected colors that reflect our brand personality. The primary colors are complemented by secondary colors to create a balanced and harmonious visual identity.
+
+```{r color-palette, fig.align="center", out.width="100%"}
+knitr::include_graphics("brand_assets/color_palette.png")
+```
+
+## Color Usage Guidelines
+
+- **Noren** (#375A9D) is our primary brand color and should be used for the logo, headings, and primary buttons
+- **Samue** (#7093BF) is a complementary blue that works well for secondary elements and accents
+- **Awanokuri** (#E3EBF3) provides a light background option that pairs well with our blue tones
+- **Hakujiiro** (#E9EAEB) and **Ginhakushoku** (#D3D3D2) are neutral tones for backgrounds and subtle design elements
+
+# Typography
+
+## Primary Font
+
+Our primary typeface is [Open Sans](https://fonts.google.com/specimen/Open+Sans), a clean and modern sans-serif font that embodies our brand values of clarity and precision.
+
+- Open Sans Light: Use for large headlines and display text
+- Open Sans Regular: Use for body text and general content
+- Open Sans SemiBold: Use for subheadings and emphasis
+- Open Sans Bold: Use for main headings and important information
+
+## Secondary Font
+
+For data visualization labels, technical documentation, and code examples, we use [Roboto Mono](https://fonts.google.com/specimen/Roboto+Mono), a monospaced font that enhances readability of technical content.
+
+## Font Hierarchy
+
+- **H1 Headings**: Open Sans Bold, 24pt/30px, Noren Blue (#375A9D)
+- **H2 Headings**: Open Sans SemiBold, 20pt/26px, Samue Blue (#7093BF)
+- **H3 Headings**: Open Sans SemiBold, 16pt/22px, Noren Blue (#375A9D)
+- **Body Text**: Open Sans Regular, 11pt/16px, Dark Gray (#333333)
+- **Caption Text**: Open Sans Light, 9pt/14px, Dark Gray (#333333)
+- **Button Text**: Open Sans SemiBold, 14pt/20px, White (#FFFFFF)
+
+# Data Visualization Style
+
+As a data-focused brand, our visualization style emphasizes clarity, precision, and insight.
+
+## Chart Colors
+
+- Use our primary blue (Noren) as the main color for single-metric visualizations
+- For multi-series visualizations, start with our primary blue and use our secondary colors in order of their appearance in the color palette
+- Use Hakujiiro or Awanokuri for background elements and grid lines
+
+## Data Visualization Principles
+
+1. **Clarity First**: Choose chart types that best represent the data and insights
+2. **Consistent Styling**: Apply consistent styling across all visualizations
+3. **Minimal Chart Junk**: Eliminate non-data elements that do not contribute to understanding
+4. **Thoughtful Annotations**: Use annotations to highlight key insights
+5. **Accessible Design**: Ensure visualizations are accessible through thoughtful use of color, shape, and size encoding
+
+# Applications
+
+## Digital Applications
+
+### Website
+
+- Use Awanokuri (#E3EBF3) as the primary background color
+- Apply Noren (#375A9D) for primary buttons and important UI elements
+- Use Samue (#7093BF) for secondary elements and hover states
+- Maintain ample white space to enhance readability
+
+### Email Signatures
+
+```
+Full Name
+Job Title
+
+SATOM: Lux ex Data
+Phone: +XX XXX XXX XXXX
+Email: name@satom.com
+Website: www.satom.com
+
+[Logo]
+```
+
+## Print Applications
+
+### Business Cards
+
+- Size: 90mm × 55mm
+- Logo: Positioned at top left, 20mm wide
+- Typography: Use Open Sans for all text
+- Colors: White background with Noren blue for logo and text
+
+### Presentations
+
+- Use templates with consistent header and footer designs
+- Apply the color palette systematically to ensure visual harmony
+- Maintain adequate white space to enhance readability
+- Use Open Sans for all text elements
+- Limit each slide to one main idea or concept
+
+# Contact Information
+
+For questions regarding the use of these brand guidelines or to request logo files and templates, please contact:
+
+Brand Manager  
+Email: brand@satom.com  
+Phone: +XX XXX XXX XXXX
+'
+
+# Write the R Markdown content to a file
+cat(rmd_content, file = "SATOM_Brand_Guidelines.Rmd")
+
+# Render the R Markdown document to PDF
+render("SATOM_Brand_Guidelines.Rmd", output_file = "SATOM_Brand_Guidelines.pdf")
+
+# Display completion message
+cat("\nBrand guidelines document has been generated as 'SATOM_Brand_Guidelines.pdf'\n")
+
+# Cleanup code (optional)
+# unlink("brand_assets", recursive = TRUE)
+# file.remove("SATOM_Brand_Guidelines.Rmd")
+
+# Note: In a real implementation, you would need to:
+# 1. Install fonts if necessary
+# 2. Use actual logo files that were uploaded
+# 3. Adjust the document to match specific company requirements

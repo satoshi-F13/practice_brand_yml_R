@@ -5,11 +5,10 @@ author: "Satoshi Matsumoto"
 format: 
   revealjs:
     theme:
-      - blood
       - custom.scss
       - brand
     slide-number: true
-    logo: "logos/icon/brand-yml-icon-color.png"
+    logo: "logos/wide/satom-wide-color.png"
     footer: "Sales Analysis - FY 2023"
     code-fold: true
     transition: slide
@@ -130,7 +129,7 @@ DT::datatable(head(sales_data, 10),
               selection = 'none')   # Remove row selection capability
 ```
 
-# Sales Performance Analysis {background-color='{{< brand color primary >}}'}
+# Sales Performance Analysis {background-color='{{< brand color info >}}'}
 
 ## Monthly Revenue Trends
 
@@ -256,7 +255,7 @@ plot_ly() %>%
   )
 ```
 
-# Regional Analysis {background-color='{{< brand color success >}}'}
+# Regional Analysis {background-color='{{< brand color info >}}'}
 
 ## Sales by Region
 
@@ -313,7 +312,7 @@ plot_ly(state_sales, y = ~reorder(state, total_sales), x = ~total_sales, type = 
          legend = list(title = list(text = 'Region')))
 ```
 
-# Customer Analysis {background-color='{{< brand color warning >}}'}
+# Customer Analysis {background-color='{{< brand color info >}}'}
 
 ## Customer Segment Performance
 
@@ -367,7 +366,7 @@ plot_ly(segment_category, x = ~customer_segment, y = ~total_sales, color = ~cate
          legend = list(title = list(text = 'Product Category')))
 ```
 
-# Additional Analyses {background-color='{{< brand color danger >}}'}
+# Additional Analyses {background-color='{{< brand color info >}}'}
 
 ## Discount Impact Analysis
 
@@ -430,7 +429,7 @@ plot_ly(shipmode_analysis, x = ~ship_mode, y = ~total_sales, type = 'bar',
          yaxis = list(title = 'Total Sales ($)', tickformat = '$,.0f'))
 ```
 
-# Key Insights & Recommendations {.white background-color='{{< brand color foreground >}}'}
+# Key Insights & Recommendations {.white background-color='{{< brand color dark >}}'}
 
 ## Top Performing Products
 
@@ -503,10 +502,10 @@ By implementing these recommendations, we project:
 This represents an estimated additional growth beyond the baseline projections. The recommendations are expected to yield results within the next fiscal year.
 :::
 
-## Thank You {.center background-image="https://via.placeholder.com/1920x1080" background-opacity="0.3"}
+## Thank You {.center background-image="https://upload.wikimedia.org/wikipedia/commons/d/d6/Arigato_station_name_sign.jpg" background-opacity="0.3"}
 
 ### Questions?
 
 <br>
 
-**Contact Information:** <br> Satoshi Matsumoto \|
+**Contact Information:** <br> Satoshi Matsumoto \| contact@satom.eu

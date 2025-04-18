@@ -1,7 +1,7 @@
 ---
 title: "Sales Analysis Dashboard"
 subtitle: "Quarterly Performance Overview"
-author: "Data Analysis Team"
+author: "S.Matsumoto"
 date: today
 format: 
   dashboard:
@@ -9,7 +9,7 @@ format:
     orientation: rows
     scrolling: true
     nav-buttons: [linkedin, twitter, github]
-    logo: "logos/icon/brand-yml-icon-color.png"
+    logo: "logos/wide/satom-wide-color.png"
 
 execute:
   echo: false
@@ -247,7 +247,7 @@ total_orders <- n_distinct(sales_data$order_id)
 #| content: valuebox
 #| title: "Total Sales"
 #| icon: cash-coin
-#| color: danger
+#| color: primary
 #| height: 150px
 
 
@@ -261,7 +261,7 @@ list(
 #| content: valuebox
 #| title: "Total Profit"
 #| icon: graph-up-arrow
-#| color: success
+#| color: secondary
 #| height: 150px
 
 list(
@@ -275,7 +275,7 @@ list(
 #| content: valuebox
 #| title: "Profit Margin"
 #| icon: percent
-#| color: danger
+#| color: secondary
 #| height: 150px
 
 list(
@@ -288,7 +288,7 @@ list(
 #| content: valuebox
 #| title: "Total Orders"
 #| icon: cart3
-#| color: warning
+#| color: info
 #| height: 150px
 
 list(
