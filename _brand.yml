@@ -67,5 +67,6 @@ defaults:
       # basic format-specific settings
       html:
       revealjs:
+      typst:
   shiny:
     # shiny specific settings
