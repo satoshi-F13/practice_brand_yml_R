@@ -32,8 +32,8 @@ library(tidyverse)
 library(lubridate)
 library(scales)
 library(DT)
-library(flextable)  # Replacing gt
-library(officer)    # Required for flextable formatting
+library(flextable) # Replacing gt
+library(officer) # Required for flextable formatting
 library(gridExtra)
 library(cowplot)
 
@@ -41,9 +41,9 @@ library(cowplot)
 set_flextable_defaults(
   font.family = "NOTO Sans",
   font.size = 12,
-  padding.top = 3, 
+  padding.top = 3,
   padding.bottom = 3,
-  padding.left = 5, 
+  padding.left = 5,
   padding.right = 5
 )
 ```
@@ -51,33 +51,29 @@ set_flextable_defaults(
 
 ```{r}
 # Function to create standardized flextable with company styling
-create_company_flextable <- function(data, 
-                                    caption = NULL, 
-                                    subtitle = NULL,
-                                    primary_color = "#7093BF") {
-  
+create_company_flextable <- function(data,
+                                     caption = NULL,
+                                     subtitle = NULL,
+                                     primary_color = "#7093BF") {
   # Create the base flextable
   ft <- flextable(data)
-  
+
   # Apply styling
   ft <- ft %>%
     # Set theme
     theme_vanilla() %>%
-    
     # Customize header
     bg(part = "header", bg = primary_color) %>%
     color(part = "header", color = "white") %>%
     bold(part = "header") %>%
-    
     # Format the table layout
     fontsize(size = 10) %>%
     padding(padding = 5) %>%
     align(align = "center", part = "header") %>%
-    
     # Add borders
     border_outer(border = fp_border(color = primary_color, width = 2)) %>%
     border_inner_h(border = fp_border(color = primary_color, width = 1))
-  
+
   # Add caption if provided
   if (!is.null(caption)) {
     if (is.null(subtitle)) {
@@ -86,10 +82,10 @@ create_company_flextable <- function(data,
       ft <- set_caption(ft, caption = paste(caption, subtitle, sep = ": "))
     }
   }
-  
+
   # Autofit for better appearance
   ft <- autofit(ft)
-  
+
   return(ft)
 }
 
@@ -98,7 +94,7 @@ format_currency_columns <- function(ft, columns, currency = "USD", digits = 0) {
   for (col in columns) {
     ft <- ft %>%
       colformat_double(
-        j = col,  # Changed from 'column' to 'j'
+        j = col, # Changed from 'column' to 'j'
         digits = digits,
         big.mark = ",",
         prefix = ifelse(currency == "USD", "$", "")
@@ -127,15 +123,44 @@ format_number_columns <- function(ft, columns, digits = 0) {
   for (col in columns) {
     ft <- ft %>%
       colformat_double(
-        j = col,  # Changed from 'column' to 'j'
+        j = col, # Changed from 'column' to 'j'
         digits = digits,
         big.mark = ","
       )
   }
   return(ft)
 }
-
 ```
+
+
+
+```{r}
+# Create a custom palette function
+my_palette <- function(n) {
+  # A sophisticated palette with 12 distinct colors
+  colors <- c(
+    "#5F4B8B", # Deep purple
+    "#00A5E3", # Bright blue
+    "#FF7D00", # Vibrant orange
+    "#4E937A", # Teal
+    "#E84855", # Coral red
+    "#8A9B68", # Olive green
+    "#4B296B", # Dark purple
+    "#7DCFB6", # Mint
+    "#F79824", # Golden orange
+    "#00635D", # Dark teal
+    "#B33951", # Ruby
+    "#2D4654"  # Slate blue
+  )
+  
+  # Return the requested number of colors
+  colors[1:min(n, length(colors))]
+}
+
+
+# scale_fill_manual(values = my_palette(4))
+```
+
 
 
 # Executive Summary
@@ -155,55 +180,54 @@ set.seed(123)
 
 # Function to generate realistic sales data
 generate_sales_data <- function(n = 1000) {
-  
   # Define product categories and sub-categories
   categories <- c("Electronics", "Furniture", "Office Supplies", "Clothing")
-  
+
   subcategories <- list(
     Electronics = c("Phones", "Computers", "Accessories", "Appliances"),
     Furniture = c("Chairs", "Tables", "Bookshelves", "Cabinets"),
     `Office Supplies` = c("Paper", "Binders", "Art Supplies", "Storage"),
     Clothing = c("Men's Apparel", "Women's Apparel", "Footwear", "Accessories")
   )
-  
+
   # Define regions and states
   regions <- c("Northeast", "Southeast", "Midwest", "West")
-  
+
   states_by_region <- list(
     Northeast = c("ME", "NH", "VT", "MA", "RI", "CT", "NY", "PA", "NJ"),
     Southeast = c("DE", "MD", "VA", "WV", "KY", "NC", "SC", "TN", "GA", "FL", "AL", "MS", "AR", "LA"),
     Midwest = c("OH", "IN", "MI", "IL", "WI", "MN", "IA", "MO", "ND", "SD", "NE", "KS"),
     West = c("MT", "ID", "WY", "CO", "NM", "AZ", "UT", "NV", "CA", "OR", "WA", "AK", "HI")
   )
-  
+
   # Customer segments
   segments <- c("Consumer", "Corporate", "Home Office", "Small Business")
-  
+
   # Generate data
   data <- tibble(
     order_id = paste0("ORD-", sample(10000:99999, n, replace = FALSE)),
-    order_date = sample(seq(as.Date('2023-01-01'), as.Date('2023-12-31'), by = "day"), n, replace = TRUE),
+    order_date = sample(seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by = "day"), n, replace = TRUE),
     region = sample(regions, n, replace = TRUE, prob = c(0.3, 0.25, 0.2, 0.25)),
     customer_segment = sample(segments, n, replace = TRUE),
     category = sample(categories, n, replace = TRUE, prob = c(0.32, 0.28, 0.25, 0.15))
   ) %>%
-  mutate(
-    state = sapply(region, function(r) sample(states_by_region[[r]], 1)),
-    subcategory = mapply(function(cat) sample(subcategories[[cat]], 1), category),
-    sales = case_when(
-      category == "Electronics" ~ runif(n, 100, 2000),
-      category == "Furniture" ~ runif(n, 80, 1500),
-      category == "Office Supplies" ~ runif(n, 10, 300),
-      category == "Clothing" ~ runif(n, 30, 500)
-    ),
-    quantity = sample(1:10, n, replace = TRUE),
-    discount = sample(c(0, 0.05, 0.1, 0.15, 0.2), n, replace = TRUE, prob = c(0.7, 0.1, 0.1, 0.05, 0.05)),
-    profit = sales * sample(seq(0.15, 0.45, by = 0.01), n, replace = TRUE),
-    ship_mode = sample(c("Standard", "Express", "Priority", "Same Day"), n, replace = TRUE, prob = c(0.6, 0.2, 0.15, 0.05)),
-    quarter = paste0("Q", quarter(order_date)),
-    month = month(order_date, label = TRUE)
-  )
-  
+    mutate(
+      state = sapply(region, function(r) sample(states_by_region[[r]], 1)),
+      subcategory = mapply(function(cat) sample(subcategories[[cat]], 1), category),
+      sales = case_when(
+        category == "Electronics" ~ runif(n, 100, 2000),
+        category == "Furniture" ~ runif(n, 80, 1500),
+        category == "Office Supplies" ~ runif(n, 10, 300),
+        category == "Clothing" ~ runif(n, 30, 500)
+      ),
+      quantity = sample(1:10, n, replace = TRUE),
+      discount = sample(c(0, 0.05, 0.1, 0.15, 0.2), n, replace = TRUE, prob = c(0.7, 0.1, 0.1, 0.05, 0.05)),
+      profit = sales * sample(seq(0.15, 0.45, by = 0.01), n, replace = TRUE),
+      ship_mode = sample(c("Standard", "Express", "Priority", "Same Day"), n, replace = TRUE, prob = c(0.6, 0.2, 0.15, 0.05)),
+      quarter = paste0("Q", quarter(order_date)),
+      month = month(order_date, label = TRUE)
+    )
+
   return(data)
 }
 
@@ -250,6 +274,8 @@ monthly_revenue_plot <- function(monthly_sales) {
     theme_minimal() +
     theme(
       plot.title = element_text(hjust = 0.5, face = "bold"),
+      panel.background = element_rect(fill = "#ffffff", color = NA),
+      plot.background = element_rect(fill = "#ffffff", color = NA),
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
 }
@@ -287,9 +313,11 @@ quarterly_sales %>%
   )
 ```
 
+
+::: {layout-ncol=2}
 ## Category Analysis
 
-```{r category-analysis, fig.height=3, fig.width=5, fig.align='center'}
+```{r category-analysis, fig.align='center',fig.height=4.5, fig.width=5.65}
 # Analyze sales by category
 category_sales <- sales_data %>%
   group_by(category) %>%
@@ -303,38 +331,42 @@ category_sales <- sales_data %>%
 
 # Create a pie chart for category distribution
 # Calculate percentages and positions for labels
-  pie_data <- category_sales %>%
-    mutate(
-      percentage = total_sales / sum(total_sales) * 100,
-      # For label positioning in pie chart
-      position = cumsum(percentage) - 0.5 * percentage
-    )
-  
-  ggplot(pie_data, aes(x = "", y = total_sales, fill = category)) +
-    geom_bar(stat = "identity", width = 1) +
-    coord_polar("y", start = 0) +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Sales by Product Category",
-      fill = "Category"
-    ) +
-    # Add percentage labels
-    # geom_text(aes(y = position, 
-    #               label = paste0(round(percentage, 1), "%")), 
-    #           position = position_stack(vjust = 0.5),
-    #           color = "white") +
-    theme_minimal() +
-    theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      panel.grid = element_blank(),
-      plot.title = element_text(hjust = 0.5, face = "bold")
-    )
+pie_data <- category_sales %>%
+  mutate(
+    percentage = total_sales / sum(total_sales) * 100,
+    # For label positioning in pie chart
+    position = cumsum(percentage) - 0.5 * percentage
+  )
+
+ggplot(pie_data, aes(x = "", y = total_sales, fill = category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Sales by Product Category",
+    fill = "Category"
+  ) +
+  # Add percentage labels
+  # geom_text(aes(y = position,
+  #               label = paste0(round(percentage, 1), "%")),
+  #           position = position_stack(vjust = 0.5),
+  #           color = "white") +
+  theme_minimal() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+        plot.margin = margin(0, 0, 0, 0, "cm"),
+    legend.background = element_rect(fill = "#ffffff", color = NA),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
 ```
 
 ### Subcategory Performance
 
-```{r subcategory-analysis, fig.height=3, fig.width=6, fig.align='center'}
+```{r subcategory-analysis, fig.height=4.5, fig.width=6, fig.align='center'}
 # Analyze sales by subcategory
 subcategory_sales <- sales_data %>%
   group_by(category, subcategory) %>%
@@ -348,22 +380,27 @@ subcategory_sales <- sales_data %>%
   arrange(category, desc(total_sales))
 
 # Create a horizontal bar chart
-  ggplot(subcategory_sales, aes(x = total_sales, y = reorder(subcategory, total_sales), fill = category)) +
-    geom_col() +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Sales by Product Subcategory",
-      x = "Total Sales ($)",
-      y = "",
-      fill = "Category"
-    ) +
-    scale_x_continuous(labels = scales::dollar_format()) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      legend.position = "right"
-    )
+ggplot(subcategory_sales, aes(x = total_sales, y = reorder(subcategory, total_sales), fill = category)) +
+  geom_col() +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Sales by Product Subcategory",
+    x = "Total Sales ($)",
+    y = "",
+    fill = "Category"
+  ) +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+    legend.position = "right"
+  )
 ```
+
+
+:::
 
 ## Regional Analysis
 
@@ -380,21 +417,21 @@ regional_sales <- sales_data %>%
   arrange(desc(total_sales))
 
 # Create a bar chart for regional sales
-  ggplot(regional_sales, aes(x = reorder(region, -total_sales), y = total_sales, fill = region)) +
-    geom_col() +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Sales by Region",
-      x = "Region",
-      y = "Total Sales ($)"
-    ) +
-    scale_y_continuous(labels = scales::dollar_format()) +
-    theme_minimal() +
+ggplot(regional_sales, aes(x = reorder(region, -total_sales), y = total_sales, fill = region)) +
+  geom_col() +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Sales by Region",
+    x = "Region",
+    y = "Total Sales ($)"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "none",  # Remove legend as colors are redundant with x-axis
-    panel.background = element_rect(fill = "transparent", color = NA),
-    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.position = "none", # Remove legend as colors are redundant with x-axis
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
     panel.grid = element_line(color = alpha("gray", 0.5))
   )
 ```
@@ -411,23 +448,25 @@ state_sales <- sales_data %>%
   ) %>%
   ungroup() %>%
   arrange(desc(total_sales)) %>%
-  head(10)  # Focus on top 10 states
+  head(10) # Focus on top 10 states
 
 # Create a horizontal bar chart for top states
-  ggplot(state_sales, aes(x = total_sales, y = reorder(state, total_sales), fill = region)) +
-    geom_col() +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Top 10 States by Sales",
-      x = "Total Sales ($)",
-      y = "State",
-      fill = "Region"
-    ) +
-    scale_x_continuous(labels = scales::dollar_format()) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold")
-    )
+ggplot(state_sales, aes(x = total_sales, y = reorder(state, total_sales), fill = region)) +
+  geom_col() +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Top 10 States by Sales",
+    x = "Total Sales ($)",
+    y = "State",
+    fill = "Region"
+  ) +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
 ```
 
 ## Customer Segment Analysis
@@ -462,6 +501,8 @@ segment_sales %>%
   )
 ```
 
+
+::: {layout-ncol=2}
 ### Segment Performance by Category
 
 ```{r segment-category-analysis, fig.height=3, fig.width=6, fig.align='center'}
@@ -474,21 +515,23 @@ segment_category <- sales_data %>%
   ungroup()
 
 # Create a grouped bar chart
-  ggplot(segment_category, aes(x = customer_segment, y = total_sales, fill = category)) +
-    geom_col(position = position_dodge()) +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Customer Segment Performance by Category",
-      x = "Customer Segment",
-      y = "Total Sales ($)",
-      fill = "Product Category"
-    ) +
-    scale_y_continuous(labels = scales::dollar_format()) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    )
+ggplot(segment_category, aes(x = customer_segment, y = total_sales, fill = category)) +
+  geom_col(position = position_dodge()) +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Customer Segment Performance by Category",
+    x = "Customer Segment",
+    y = "Total Sales ($)",
+    fill = "Product Category"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
 # Discount Analysis
@@ -496,9 +539,10 @@ segment_category <- sales_data %>%
 ```{r discount-analysis, fig.height=3, fig.width=6, fig.align='center'}
 # Analyze impact of discounts
 discount_impact <- sales_data %>%
-  mutate(discount_bin = cut(discount, 
-                            breaks = c(-0.001, 0.001, 0.05, 0.1, 0.15, 0.2, 1),
-                            labels = c("0%", "1-5%", "6-10%", "11-15%", "16-20%", ">20%"))) %>%
+  mutate(discount_bin = cut(discount,
+    breaks = c(-0.001, 0.001, 0.05, 0.1, 0.15, 0.2, 1),
+    labels = c("0%", "1-5%", "6-10%", "11-15%", "16-20%", ">20%")
+  )) %>%
   group_by(discount_bin) %>%
   summarize(
     total_sales = sum(sales),
@@ -509,22 +553,26 @@ discount_impact <- sales_data %>%
   )
 
 # Create a scatter plot showing profit margin by discount level
-  ggplot(discount_impact, aes(x = discount_bin, y = profit_margin, size = total_sales)) +
-    geom_point(color = "#FF6F20", alpha = 0.7) +
-    labs(
-      title = "Discount Impact on Profit Margin",
-      x = "Discount Level",
-      y = "Profit Margin",
-      size = "Total Sales"
-    ) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    )
+ggplot(discount_impact, aes(x = discount_bin, y = profit_margin, size = total_sales)) +
+  geom_point(color = "#FF6F20", alpha = 0.7) +
+  labs(
+    title = "Discount Impact on Profit Margin",
+    x = "Discount Level",
+    y = "Profit Margin",
+    size = "Total Sales"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
+
+:::
 # Ship Mode Analysis
 
 ```{r shipmode-analysis, fig.height=3, fig.width=6, fig.align='center'}
@@ -541,20 +589,22 @@ shipmode_analysis <- sales_data %>%
   arrange(desc(total_sales))
 
 # Create a bar chart
-  ggplot(shipmode_analysis, aes(x = reorder(ship_mode, -total_sales), y = total_sales, fill = ship_mode)) +
-    geom_col() +
-    scale_fill_manual(values = c("#FF6F20", "#FF3D7F", "#28A745", "#FFC107")) +
-    labs(
-      title = "Sales by Shipping Mode",
-      x = "Shipping Mode",
-      y = "Total Sales ($)"
-    ) +
-    scale_y_continuous(labels = scales::dollar_format()) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      legend.position = "none"  # Remove legend as colors are redundant with x-axis
-    )
+ggplot(shipmode_analysis, aes(x = reorder(ship_mode, -total_sales), y = total_sales, fill = ship_mode)) +
+  geom_col() +
+  scale_fill_manual(values = my_palette(12)) +
+  labs(
+    title = "Sales by Shipping Mode",
+    x = "Shipping Mode",
+    y = "Total Sales ($)"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "#ffffff", color = NA),
+    plot.background = element_rect(fill = "#ffffff", color = NA),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none" # Remove legend as colors are redundant with x-axis
+  )
 ```
 
 
@@ -627,4 +677,3 @@ The sales analysis reveals strong overall performance with clear opportunities f
 # Appendix: Methodology
 
 This analysis was performed using R and various data analysis packages including tidyverse, plotly, and gt. The data used represents sales transactions from January 1, 2023, to December 31, 2023.
-

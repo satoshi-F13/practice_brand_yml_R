@@ -38,7 +38,9 @@
     set page(
       "us-letter",
       margin: (left: 1in, right: 1in, top: 1.95in, bottom: 1.5in),
- 
+      fill: rgb("ffffff"),
+
+
       header: 
       
   // Define the header for the first page
